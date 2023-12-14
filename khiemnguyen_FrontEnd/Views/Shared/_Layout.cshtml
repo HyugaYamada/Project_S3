@@ -390,6 +390,38 @@
         </main>
     </div>
 
+	<!-- Fixed Search Bar Start -->
+	<div class="fixed-search-section">
+		<div class="fixed-serach-icon ">
+			<div class="fixed-search ">
+				<a href="javascript:void(0)">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<mask id="mask0_504_17203" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+							<rect width="24" height="24" fill="white" />
+						</mask>
+						<g mask="url(#mask0_504_17203)">
+							<circle cx="11.7666" cy="11.7666" r="8.98856" stroke="#0B1315" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+							<path d="M18.0183 18.4851L21.5423 22" stroke="#0B1315" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+						</g>
+					</svg>
+				</a>
+			</div>
+		</div>
+		<div class="search-popup">
+			<span class="search-back-drop"></span>
+			<button class="close-search"><span class="fa fa-times"></span></button>
+			<div class="search-inner">
+				<form asp-action="searchbyfoods">
+					<div class="form-group">
+						<input type="search" name="search-field" value="" placeholder="Search..." required="">
+						<button type="submit"><i class="fa fa-search"></i></button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Fixed Search Bar End -->
+
 	<script src="js/jquery-min-3.6.0.js"></script>
 	<script src="js/slick.min.js"></script>
 	<script src="js/bootstrap.bundle.min.js"></script>

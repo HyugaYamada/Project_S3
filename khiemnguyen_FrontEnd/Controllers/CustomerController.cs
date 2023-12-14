@@ -1,15 +1,15 @@
-﻿using khiemnguyen.WebApi.Models;
+﻿using BraintreeHttp;
+using khiemnguyen.WebApi.Models;
 using khiemnguyen_FrontEnd.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
+using PayPal.Core;
+using PayPal.v1.Payments;
 using System;
 using System.Globalization;
 using System.Reflection;
 using System.Security.Cryptography;
-using BraintreeHttp;
-using PayPal.Core;
-using PayPal.v1.Payments;
 using static System.Net.Mime.MediaTypeNames;
 using Order = khiemnguyen_FrontEnd.Models.Order;
 
@@ -29,7 +29,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 		public IActionResult Index()
 		{
 			ViewBag.Cid = APIControl.UserID;
-			
+
 			IEnumerable<Category> category = Control.GetEndPoint<Category>("/GetcategoryList/");
 			IEnumerable<UserInfo> caterers = Control.GetEndPoint<UserInfo>("/GetCaterers/");
 			IEnumerable<Menu> Mnu = Control.GetEndPoint<Menu>("/GetMenu/");
@@ -37,7 +37,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 			ViewBag.caterers = caterers;
 
 			return View(Mnu);
-			
+
 		}
 
 		[HttpPost]
@@ -46,7 +46,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 
 			IEnumerable<Category> category = Control.GetEndPoint<Category>("/GetcategoryList/");
 			IEnumerable<UserInfo> caterers = Control.GetEndPoint<UserInfo>("/GetCaterers/");
-		
+
 			ViewBag.category = category;
 			ViewBag.caterers = caterers;
 
@@ -54,7 +54,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 			string search = Request.Form["search-field"].ToString();
 			IEnumerable<Menu> Mnu = Control.GetEndPoint<Menu>("/GetMenubyCatererFood/" + search);
 
-			return View("Index",Mnu);
+			return View("Index", Mnu);
 		}
 
 		[HttpPost]
@@ -67,13 +67,13 @@ namespace khiemnguyen_FrontEnd.Controllers
 
 			IEnumerable<Category> category = Control.GetEndPoint<Category>("/GetcategoryList/");
 			IEnumerable<UserInfo> caterers = Control.GetEndPoint<UserInfo>("/GetCaterers/");
-			IEnumerable<Menu> Mnu = Control.GetEndPoint<Menu>("/GetMenubyCatererCategoury/"+ Caterer+ "/" + Category);
+			IEnumerable<Menu> Mnu = Control.GetEndPoint<Menu>("/GetMenubyCatererCategoury/" + Caterer + "/" + Category);
 			ViewBag.category = category;
 			ViewBag.caterers = caterers;
 
-			return View("Index",Mnu);
+			return View("Index", Mnu);
 
-		
+
 		}
 
 		public IActionResult Login()
@@ -88,7 +88,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 			IEnumerable<Order> ss = Control.PostEndPoint<Order>("/UpdateUser/", model);
 			IEnumerable<UserInfo> Mnu = Control.GetEndPoint<UserInfo>("/GetUserbyUserName/" + APIControl.UserName);
 
-			return View("editprofile",Mnu.FirstOrDefault());
+			return View("editprofile", Mnu.FirstOrDefault());
 		}
 
 		[HttpPost]
@@ -128,7 +128,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 		}
 		public IActionResult RegistorUsers()
 		{
-		
+
 			return View();
 		}
 
@@ -142,21 +142,21 @@ namespace khiemnguyen_FrontEnd.Controllers
 		{
 			string Msg = "";
 			IEnumerable<UserInfo> Mnu = Control.GetEndPoint<UserInfo>("/GetUserbyUserName/" + model.Email);
-		
+
 			var newpwd = Request.Form["newpwd"].ToString();
 			var conpwd = Request.Form["conpwd"].ToString();
 			var QuationNo = Request.Form["QuationNo"].ToString();
 
 
-			if (Mnu.FirstOrDefault().quationNo!=int.Parse(QuationNo))
+			if (Mnu.FirstOrDefault().quationNo != int.Parse(QuationNo))
 			{
 				Msg = "Inavlid Security Quation or Awnswer!";
 			}
-			if (Mnu.FirstOrDefault().Answer !=model.Answer)
+			if (Mnu.FirstOrDefault().Answer != model.Answer)
 			{
 				Msg = "Inavlid Security Quation or Awnswer!";
 			}
-			if (Mnu.Count()<=0)
+			if (Mnu.Count() <= 0)
 			{
 				Msg = "Email Address not found!";
 			}
@@ -184,7 +184,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 			model.CreatedDate = DateTime.Now;
 			model.Role = "Customer";
 			IFormFile image = Request.Form.Files[0];
-			int QuationNo =int.Parse( Request.Form["QuationNo"].ToString());
+			int QuationNo = int.Parse(Request.Form["QuationNo"].ToString());
 			model.quationNo = QuationNo;
 			var fileName = Path.GetFileName(image.FileName);
 
@@ -201,7 +201,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 
 
 			return RedirectToAction("Login");
-		
+
 		}
 		[HttpPost]
 		public IActionResult LoginPOST()
@@ -227,14 +227,17 @@ namespace khiemnguyen_FrontEnd.Controllers
 				// Redirect based on role
 				if (APIControl.Role == "Caterer")
 				{
+					TempData["LoginStatus"] = "Valid";
 					return RedirectToAction("Index", "Caterer");
 				}
 				else if (APIControl.Role == "Customer")
 				{
+					TempData["LoginStatus"] = "Valid";
 					return RedirectToAction("Index", "Customer");
 				}
 				else if (APIControl.Role == "Admin")
 				{
+					TempData["LoginStatus"] = "Valid";
 					return RedirectToAction("Index", "Admin");
 				}
 			}
@@ -244,7 +247,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 				APIControl.UserID = 0;
 				APIControl.FullName = "";
 			}
-
+			TempData["LoginStatus"] = "Invalid";
 			return RedirectToAction("Login", "Customer");
 		}
 
@@ -278,7 +281,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 			mimeMessage.From.Add(new MailboxAddress(userName, senderEmail));
 			mimeMessage.To.Add(new MailboxAddress("Admin", "lazybee9711@gmail.com"));
 			mimeMessage.Subject = subject;
-			mimeMessage.Body = new TextPart("plain") { Text = senderEmail+" "+ "Dear Admin: " + body };
+			mimeMessage.Body = new TextPart("plain") { Text = senderEmail + " " + "Dear Admin: " + body };
 			using (MailKit.Net.Smtp.SmtpClient smtpClient = new MailKit.Net.Smtp.SmtpClient())
 			{
 				smtpClient.Connect("smtp.gmail.com", 587, false);
@@ -297,17 +300,17 @@ namespace khiemnguyen_FrontEnd.Controllers
 			APIControl.UserID = 0;
 			APIControl.FullName = "";
 			APIControl.UserName = "";
-			return RedirectToAction("Login","Customer");
+			return RedirectToAction("Login", "Customer");
 		}
 
 
 		public IActionResult ViewOrderDetails(int id)
 		{
-		
 
 
 
-					IEnumerable<Order> Ord = Control.GetEndPoint<Order>("/GetOrdersbyid2/" + id);
+
+			IEnumerable<Order> Ord = Control.GetEndPoint<Order>("/GetOrdersbyid2/" + id);
 			IEnumerable<Food_in_Menu> MnuItems = Control.GetEndPoint<Food_in_Menu>("/GetMenuFoodsbyMenuID/" + Ord.FirstOrDefault().Menuid);
 			IEnumerable<Menu> Mnu = Control.GetEndPoint<Menu>("/GetMenubyID/" + MnuItems.FirstOrDefault().Menuid);
 
@@ -318,15 +321,15 @@ namespace khiemnguyen_FrontEnd.Controllers
 			ViewBag.MenuFoods = MnuItems;
 			return View(Ord.FirstOrDefault());
 		}
-		public IActionResult addFavorite(int id,int mid)
+		public IActionResult addFavorite(int id, int mid)
 		{
-			var data = new Favor_Cater {Caterid=id,Custid=APIControl.UserID,name="" };
-			
+			var data = new Favor_Cater { Caterid = id, Custid = APIControl.UserID, name = "" };
+
 
 
 			IEnumerable<Order> ss = Control.PostEndPoint<Order>("/AddFavorit/", data);
 
-			return RedirectToAction("singleshop",new {id=mid});
+			return RedirectToAction("singleshop", new { id = mid });
 		}
 		public IActionResult CheckOrders()
 		{
@@ -337,16 +340,16 @@ namespace khiemnguyen_FrontEnd.Controllers
 
 		public IActionResult Ordercancel(int id)
 		{
-			
-		
+
+
 			var Pr = new Para { id = id };
 
-			IEnumerable<UserInfo> ss = Control.PostEndPoint<UserInfo>("/CancelOrder/",Pr);
+			IEnumerable<UserInfo> ss = Control.PostEndPoint<UserInfo>("/CancelOrder/", Pr);
 
 			IEnumerable<Order> Mnu = Control.GetEndPoint<Order>("/GetOrdersbyUser/" + APIControl.UserID);
 
 			return RedirectToAction("CheckOrders");
-	
+
 		}
 
 		public IActionResult PayNow()
@@ -372,16 +375,16 @@ namespace khiemnguyen_FrontEnd.Controllers
 					DelivDate = DateTime.Now,
 					Status = "P",
 					israted = 0,
-					MenuName=obj.MenuName,
-					IsCanceled=0,
-					Venue=obj.Venue
-					
-					
-					
+					MenuName = obj.MenuName,
+					IsCanceled = 0,
+					Venue = obj.Venue
+
+
+
 				};
 				Ord.Add(data);
 			}
-	
+
 			IEnumerable<Order> ss = Control.PostEndPoint<Order>("/AddOrder/", Ord);
 			CartControl.MyCart.Clear();
 
@@ -396,15 +399,15 @@ namespace khiemnguyen_FrontEnd.Controllers
 		public IActionResult Message(int id)
 		{
 
-			IEnumerable<UserInfo> Mnu = Control.GetEndPoint<UserInfo>("/GetUserbyID/"+id);
+			IEnumerable<UserInfo> Mnu = Control.GetEndPoint<UserInfo>("/GetUserbyID/" + id);
 			ViewBag.caterer = Mnu.FirstOrDefault().FullName;
 			ViewBag.catererid = Mnu.FirstOrDefault().UserId;
-			
+
 			return View();
 		}
 
 
-		public IActionResult deleteMessage(int id,int recvid)
+		public IActionResult deleteMessage(int id, int recvid)
 		{
 			IEnumerable<Message> Mnu = Control.GetEndPoint<Message>("/DeleteMessage/" + id);
 
@@ -413,9 +416,9 @@ namespace khiemnguyen_FrontEnd.Controllers
 
 		public IActionResult ViewCaterer(int id)
 		{
-			
 
-						IEnumerable<UserInfo> Mnu = Control.GetEndPoint<UserInfo>("/GetUserbyID/" + id);
+
+			IEnumerable<UserInfo> Mnu = Control.GetEndPoint<UserInfo>("/GetUserbyID/" + id);
 
 
 
@@ -424,8 +427,8 @@ namespace khiemnguyen_FrontEnd.Controllers
 		}
 		public IActionResult Viewfavourite()
 		{
-			
-					IEnumerable<Favor_Cater> Mnu = Control.GetEndPoint<Favor_Cater>("/GetfavouriteList/" + APIControl.UserID);
+
+			IEnumerable<Favor_Cater> Mnu = Control.GetEndPoint<Favor_Cater>("/GetfavouriteList/" + APIControl.UserID);
 
 			return View(Mnu);
 		}
@@ -461,9 +464,9 @@ namespace khiemnguyen_FrontEnd.Controllers
 		}
 		public IActionResult MailBox()
 		{
-			
-					IEnumerable<Message2> Mnu = Control.GetEndPoint<Message2>("/GetMailInbox3/" +APIControl.UserID);
-			List<Message2> tt=Mnu.Where(x=>x.User_sent==APIControl.UserID || x.User_received==APIControl.UserID).DistinctBy(x => x.User_sent).ToList();
+
+			IEnumerable<Message2> Mnu = Control.GetEndPoint<Message2>("/GetMailInbox3/" + APIControl.UserID);
+			List<Message2> tt = Mnu.Where(x => x.User_sent == APIControl.UserID || x.User_received == APIControl.UserID).DistinctBy(x => x.User_sent).ToList();
 			return View(tt);
 		}
 
@@ -471,19 +474,19 @@ namespace khiemnguyen_FrontEnd.Controllers
 		public IActionResult ViewMail(int id)
 		{
 			//{ Userid}/{ Senderid}
-			IEnumerable<Message> messages = Control.GetEndPoint<Message>("/GetMessagebyUser/" +"4/2/");
+			IEnumerable<Message> messages = Control.GetEndPoint<Message>("/GetMessagebyUser/" + "4/2/");
 			ViewBag.messages = messages;
 
 			IEnumerable<Message2> Mnu = Control.GetEndPoint<Message2>("/GetMailInbox3/" + APIControl.UserID);
 
-			IEnumerable<Message> Mnu2 = Control.GetEndPoint<Message>("/GetMessagebyID/" +id);
+			IEnumerable<Message> Mnu2 = Control.GetEndPoint<Message>("/GetMessagebyID/" + id);
 			IEnumerable<UserInfo> Usr = Control.GetEndPoint<UserInfo>("/GetUserbyID/" + Mnu.FirstOrDefault().User_sent);
 			List<Message2> tt = Mnu.Where(x => x.User_sent == APIControl.UserID || x.User_received == APIControl.UserID).DistinctBy(x => x.User_sent).ToList();
 
 			ViewBag.caterer = Usr.FirstOrDefault().FullName;
 			ViewBag.mesgid = id;
 			ViewBag.catererid = Usr.FirstOrDefault().UserId;
-			if (Mnu2.Count()>0)
+			if (Mnu2.Count() > 0)
 			{
 				ViewBag.smessage = Mnu2.FirstOrDefault().Message_note;
 			}
@@ -491,13 +494,13 @@ namespace khiemnguyen_FrontEnd.Controllers
 			{
 				ViewBag.smessage = null;
 			}
-			return View("MailBox",tt);
+			return View("MailBox", tt);
 		}
 
 		public IActionResult SendMessage(Message model)
 		{
 			var id = Request.Form["catererid"].ToString();
-			if (id!="")
+			if (id != "")
 			{
 				model.User_received = int.Parse(Request.Form["catererid"].ToString());
 				model.User_sent = APIControl.UserID;
@@ -507,7 +510,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 				IEnumerable<Message> ss = Control.PostEndPoint<Message>("/AddMessageto/", model);
 			}
 
-			return RedirectToAction("ViewMail",new { id= model.User_received });
+			return RedirectToAction("ViewMail", new { id = model.User_received });
 		}
 
 
@@ -515,9 +518,9 @@ namespace khiemnguyen_FrontEnd.Controllers
 		[HttpPost]
 		public IActionResult SaveRate()
 		{
-			byte[]? image2=null;
+			byte[]? image2 = null;
 			IFormFile image;
-			var s1 = ((Request.Form["rate1"].ToString() == "") ? 0 : int.Parse(Request.Form["rate1"].ToString())) ;
+			var s1 = ((Request.Form["rate1"].ToString() == "") ? 0 : int.Parse(Request.Form["rate1"].ToString()));
 			var s2 = ((Request.Form["rate2"].ToString() == "") ? 0 : int.Parse(Request.Form["rate2"].ToString()));
 			var s3 = ((Request.Form["rate3"].ToString() == "") ? 0 : int.Parse(Request.Form["rate3"].ToString()));
 			var s4 = ((Request.Form["rate4"].ToString() == "") ? 0 : int.Parse(Request.Form["rate4"].ToString()));
@@ -525,10 +528,11 @@ namespace khiemnguyen_FrontEnd.Controllers
 			int rate = 0;
 
 
-			if (s5 >0)
+			if (s5 > 0)
 			{
 				rate = 5;
-			}else if (s4 > 0)
+			}
+			else if (s4 > 0)
 			{
 				rate = 4;
 			}
@@ -550,7 +554,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 
 			if (Request.Form.Files.Count > 0)
 			{
-				 image = Request.Form.Files[0];
+				image = Request.Form.Files[0];
 				using (var target = new MemoryStream())
 				{
 					image.CopyTo(target);
@@ -559,16 +563,17 @@ namespace khiemnguyen_FrontEnd.Controllers
 				}
 			}
 
-			var RateData = new FeedBack { 
-			Menuid=int.Parse(Menuid),
-			Userid=APIControl.UserID,
-			Message=Message,
-			image=image2,
-			rate=rate,
-			Timestamp=DateTime.Now		,
-			Replyto="",
-			orderid=int.Parse(orderid),
-			UserName=""
+			var RateData = new FeedBack
+			{
+				Menuid = int.Parse(Menuid),
+				Userid = APIControl.UserID,
+				Message = Message,
+				image = image2,
+				rate = rate,
+				Timestamp = DateTime.Now,
+				Replyto = "",
+				orderid = int.Parse(orderid),
+				UserName = ""
 			};
 
 			IEnumerable<Menu> ss = Control.PostEndPoint<Menu>("/AddFeedBack/", RateData);
@@ -576,7 +581,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 			return RedirectToAction("checkorders");
 		}
 
-		public IActionResult Rating(int id,int ordid)
+		public IActionResult Rating(int id, int ordid)
 		{
 			Order ord = new Order();
 			ord.Menuid = id;
@@ -587,18 +592,18 @@ namespace khiemnguyen_FrontEnd.Controllers
 		{
 			List<Order> Ord = new List<Order>();
 
-			foreach(var obj in CartControl.MyCart)
+			foreach (var obj in CartControl.MyCart)
 			{
 				var data = new Order
 				{
-					 Caterid = APIControl.UserID,
-					  Custid=obj.custid,
-					   Menuid=obj.menuid,
-					    Quantity=obj.Quantity,
-						TotalPrice=obj.Price,
-						Image=obj.Image,
-						MenuName=obj.MenuName
-						
+					Caterid = APIControl.UserID,
+					Custid = obj.custid,
+					Menuid = obj.menuid,
+					Quantity = obj.Quantity,
+					TotalPrice = obj.Price,
+					Image = obj.Image,
+					MenuName = obj.MenuName
+
 				};
 				Ord.Add(data);
 			}
@@ -615,7 +620,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 		[HttpPost]
 		public IActionResult AddtoCart()
 		{
-			
+
 			string menuid = Request.Form["id"].ToString();
 			string qty = Request.Form["quantity"].ToString();
 			string price = Request.Form["Price"].ToString();
@@ -623,7 +628,7 @@ namespace khiemnguyen_FrontEnd.Controllers
 			string dob = Request.Form["dob"].ToString();
 
 			IEnumerable<Menu> Mnu = Control.GetEndPoint<Menu>("/GetMenubyID/" + menuid);
-			var cartdata = new Cart { caterid=Mnu.FirstOrDefault().CaterID, custid = APIControl.UserID, Image=Mnu.FirstOrDefault().Image, menuid=int.Parse(menuid),Quantity=int.Parse(qty),Price=int.Parse(price) ,MenuName=Mnu.FirstOrDefault().Name,dob=DateTime.Parse( dob),Venue=Venue};
+			var cartdata = new Cart { caterid = Mnu.FirstOrDefault().CaterID, custid = APIControl.UserID, Image = Mnu.FirstOrDefault().Image, menuid = int.Parse(menuid), Quantity = int.Parse(qty), Price = int.Parse(price), MenuName = Mnu.FirstOrDefault().Name, dob = DateTime.Parse(dob), Venue = Venue };
 
 			CartControl.MyCart.Add(cartdata);
 			return RedirectToAction("Index");
@@ -637,16 +642,16 @@ namespace khiemnguyen_FrontEnd.Controllers
 
 		public IActionResult contactus()
 		{
-			return View();	
+			return View();
 		}
 
 		public IActionResult SingleShop(int id)
 		{
-			
+
 
 			IEnumerable<Menu> Mnu = Control.GetEndPoint<Menu>("/GetMenubyID/" + id);
 			IEnumerable<FeedBack> Backf = Control.GetEndPoint<FeedBack>("/GetFeedBackbyID2/" + id);
-			IEnumerable<UserInfo> chefData =  Control.GetEndPoint<UserInfo>("/GetUserbyID/" + Mnu.FirstOrDefault().CaterID);
+			IEnumerable<UserInfo> chefData = Control.GetEndPoint<UserInfo>("/GetUserbyID/" + Mnu.FirstOrDefault().CaterID);
 
 			ViewBag.Chef = chefData.FirstOrDefault().FullName;
 
@@ -667,106 +672,108 @@ namespace khiemnguyen_FrontEnd.Controllers
 			ViewBag.rcount = Backf.Count();
 
 			return View(Mnu.FirstOrDefault());
-			
+
 		}
-		
+
 		public async Task<IActionResult> PaypalCheckout()
-    {
-        var environment = new SandboxEnvironment(_clientId, _secretKey);
-        var client = new PayPalHttpClient(environment);
+		{
+			var environment = new SandboxEnvironment(_clientId, _secretKey);
+			var client = new PayPalHttpClient(environment);
 
-        #region Create Paypal Order
+			#region Create Paypal Order
 
-        var itemList = new ItemList
-        {
-            Items = new List<Item>()
-        };
-        var total = Math.Round((double)CartControl.MyCart.Sum(p => p.Price * p.Quantity)*1.1);
-        foreach (var obj in CartControl.MyCart)
-            itemList.Items.Add(new Item
-            {
-                Name = obj.MenuName,
-                Currency = "USD",
-                Price = total.ToString(),
-                Quantity = "1",
-                Sku = "sku",
-                Tax = "0"
-            });
+			var itemList = new ItemList
+			{
+				Items = new List<Item>()
+			};
+			var total = Math.Round((double)CartControl.MyCart.Sum(p => p.Price * p.Quantity) * 1.1);
+			foreach (var obj in CartControl.MyCart)
+				itemList.Items.Add(new Item
+				{
+					Name = obj.MenuName,
+					Currency = "USD",
+					Price = total.ToString(),
+					Quantity = "1",
+					Sku = "sku",
+					Tax = "0"
+				});
 
-        #endregion
+			#endregion
 
-        var paypalOrderId = DateTime.Now.Ticks;
-        var hostname = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
-        var payment = new Payment
-        {
-            Intent = "sale",
-            Transactions = new List<Transaction>
-            {
-                new()
-                {
-                    Amount = new Amount
-                    {
-                        Total = total.ToString(CultureInfo.CurrentCulture),
-                        Currency = "USD",
-                        Details = new AmountDetails
-                        {
-                            Tax = "0",
-                            Shipping = "0",
-                            Subtotal = total.ToString(CultureInfo.CurrentCulture)
-                        }
-                    },
-                    ItemList = itemList,
-                    Description = $"Invoice #{paypalOrderId}",
-                    InvoiceNumber = paypalOrderId.ToString()
-                }
-            },
-            RedirectUrls = new RedirectUrls
-            {
-                CancelUrl = $"{hostname}/Customer/Index",
-                ReturnUrl = $"{hostname}/Customer/PayNow"
-            },
-            Payer = new Payer
-            {
-                PaymentMethod = "paypal"
-            }
-        };
+			var paypalOrderId = DateTime.Now.Ticks;
+			var hostname = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+			var payment = new Payment
+			{
+				Intent = "sale",
+				Transactions = new List<Transaction>
+			{
+				new()
+				{
+					Amount = new Amount
+					{
+						Total = total.ToString(CultureInfo.CurrentCulture),
+						Currency = "USD",
+						Details = new AmountDetails
+						{
+							Tax = "0",
+							Shipping = "0",
+							Subtotal = total.ToString(CultureInfo.CurrentCulture)
+						}
+					},
+					ItemList = itemList,
+					Description = $"Invoice #{paypalOrderId}",
+					InvoiceNumber = paypalOrderId.ToString()
+				}
+			},
+				RedirectUrls = new RedirectUrls
+				{
+					CancelUrl = $"{hostname}/Customer/Index",
+					ReturnUrl = $"{hostname}/Customer/PayNow"
+				},
+				Payer = new Payer
+				{
+					PaymentMethod = "paypal"
+				}
+			};
 
-        var request = new PaymentCreateRequest();
-        request.RequestBody(payment);
+			var request = new PaymentCreateRequest();
+			request.RequestBody(payment);
 
-        try
-        {
-            var response = await client.Execute(request);
-            var statusCode = response.StatusCode;
-            var result = response.Result<Payment>();
+			try
+			{
+				var response = await client.Execute(request);
+				var statusCode = response.StatusCode;
+				var result = response.Result<Payment>();
 
-            var links = result.Links.GetEnumerator();
-            string paypalRedirectUrl = null;
-            while (links.MoveNext())
-            {
-                var lnk = links.Current;
-                if (lnk.Rel.ToLower().Trim().Equals("approval_url"))
-                    //saving the payapalredirect URL to which user will be redirected for payment  
-                    paypalRedirectUrl = lnk.Href;
-            }
+				var links = result.Links.GetEnumerator();
+				string paypalRedirectUrl = null;
+				while (links.MoveNext())
+				{
+					var lnk = links.Current;
+					if (lnk.Rel.ToLower().Trim().Equals("approval_url"))
+						//saving the payapalredirect URL to which user will be redirected for payment  
+						paypalRedirectUrl = lnk.Href;
+				}
 
-            return Redirect(paypalRedirectUrl);
-        }
-        catch (HttpException httpException)
-        {
-            var statusCode = httpException.StatusCode;
-            var debugId = httpException.Headers.GetValues("PayPal-Debug-Id").FirstOrDefault();
+				return Redirect(paypalRedirectUrl);
+			}
+			catch (HttpException httpException)
+			{
+				var statusCode = httpException.StatusCode;
+				var debugId = httpException.Headers.GetValues("PayPal-Debug-Id").FirstOrDefault();
 
-            // Log detailed information about the exception
-            Console.WriteLine($"PayPal Checkout Exception - Status Code: {statusCode}, Debug ID: {debugId}");
+				// Log detailed information about the exception
+				Console.WriteLine($"PayPal Checkout Exception - Status Code: {statusCode}, Debug ID: {debugId}");
 
-            // Log the exception message and response body
-            Console.WriteLine($"PayPal Checkout Exception - Message: {httpException.Message}");
+				// Log the exception message and response body
+				Console.WriteLine($"PayPal Checkout Exception - Message: {httpException.Message}");
 
             // Process when Checkout with Paypal fails
             return Redirect("/Customer/Index");
         }
+				// Process when Checkout with Paypal fails
+				return Redirect("/GioHang/CheckoutFail");
+			}
 
-    }
+		}
 	}
-}

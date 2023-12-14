@@ -180,13 +180,21 @@
 									<option value="COD">CASH ON DELIVERY</option>
 								</select>
 							</form>
-							<div class="checkout-btn">
-								<a asp-action="Paynow">Pay Now</a>
-							</div>
+							
+								<form asp-action="PayNow" method="post">
+									<button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+										<img src="~/images/cashondeliever.png" alt="PayPal" style="width: 500px; height: auto;">
+									</button>
+								</form>
+				
 							<!-- Set up a container element for the button -->
-							<div class="checkout-btn">
-								<a asp-action="PaypalCheckout" style="color:blue">Paypal</a>
-							</div>
+							
+								<form asp-action="PaypalCheckout" method="post">
+									<button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+										<img src="~/images/paypal.png" alt="PayPal" style="width: 500px; height: auto;">
+									</button>
+								</form>
+							
 						</div>
 					</div>
 				</div>
