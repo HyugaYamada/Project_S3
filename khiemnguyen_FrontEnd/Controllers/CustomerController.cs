@@ -764,7 +764,7 @@ namespace khiemnguyen_FrontEnd.Controllers
             Console.WriteLine($"PayPal Checkout Exception - Message: {httpException.Message}");
 
             // Process when Checkout with Paypal fails
-            return Redirect("/GioHang/CheckoutFail");
+            return Redirect("/Customer/Index");
         }
 
     }

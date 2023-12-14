@@ -25,6 +25,7 @@
 	<link rel="stylesheet" href="~/css/style.css">
 	<link rel="stylesheet" href="~/css/media-query.css">
 	<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+	<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID"></script>
 </head>
 <body>
 	<div class="site_content">
@@ -183,9 +184,9 @@
 								<a asp-action="Paynow">Pay Now</a>
 							</div>
 							<!-- Set up a container element for the button -->
-							<form id="paypal-form" asp-controller="Customer" asp-action="PaypalCheckout" method="post">
-                                <button type="submit">Pay with PayPal</button>
-                            </form>
+							<div class="checkout-btn">
+								<a asp-action="PaypalCheckout" style="color:blue">Paypal</a>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -364,6 +365,5 @@
 	<script src="~/js/aos.js"></script>
 	<script src="~/js/wow.min.js"></script>
 	<script src="~/js/custom.js"></script>
-
 </body>
 </html>
