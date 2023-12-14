@@ -120,19 +120,19 @@
 						<form asp-action="AddFoodsPOST" enctype="multipart/form-data">
 			
 						<div class="single-input-form-about-us">
-								@Html.DropDownListFor(a => a.Category, new SelectList(@ViewBag.category, "Name", "Name"), new { @class = "custom-select custom-select2" })
+								@Html.DropDownListFor(a => a.Category, new SelectList(@ViewBag.category, "Name", "Name"), new { @class = "custom-select custom-select2", required = "required" })
 							</div>
 					
 						
 						<div class="single-input-form-about-us">
-								<input type="text" name="Name" id="Name" placeholder="Name" asp-for="Name" class="about-us-input-custom">
+								<input type="text" name="Name" id="Name" placeholder="Name" asp-for="Name" class="about-us-input-custom" required>
 						</div>
 
 						<div class="single-input-form-about-us">
-								<input type="text" name="Description" id="Description" placeholder="Description" asp-for="Description" class="about-us-input-custom">
+								<input type="text" name="Description" id="Description" placeholder="Description" asp-for="Description" class="about-us-input-custom" required>
 						</div>
 							<div class="single-input-form-about-us">
-								<input type="file" name="Image" id="Image" placeholder="Upload File" asp-for="Image" class="about-us-input-custom">
+								<input type="file" name="Image" id="Image" placeholder="Upload File" asp-for="Image" class="about-us-input-custom" required>
 							</div>
 					
 						<div class="single-shop-content5">
