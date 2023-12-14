@@ -1,0 +1,413 @@
+﻿<!DOCTYPE html>
+@{
+	string user = "";
+}
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - khiemnguyen_FrontEnd</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/khiemnguyen_FrontEnd.styles.css" asp-append-version="true" />
+
+	<link rel="icon" href="~/images/favicon/icon.png">
+	<link href="https://fonts.googleapis.com/css2?family=Elsie&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Elsie&family=Lexend:wght@400;500&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="css/all.min.css">
+	<link rel="stylesheet" href="css/slick.css">
+	<link rel="stylesheet" href="css/aos.css">
+	<link rel="stylesheet" href="css/animate.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/photoswipe.min.css">
+	<link rel="stylesheet" href="css/default-skin.min.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/media-query.css">
+
+	<header id="header-homepage1">
+		<div class="header-full-section">
+			<div class="header-logo">
+				<a href="index.html">
+					<img src="~/images/Homepage1/logo.png" alt="header-logo" class="homepage1-logo">
+				</a>
+			</div>
+			<div class="header-menu-wrap">
+				<div class="header-nav-wrap">
+					<nav class="navbar navbar-expand-xl p-0">
+						<div class="navbar-collapse" id="navbarSupportedContent">
+							<div class="navbar-nav mx-auto align-items-center">
+							@if (@APIControl.UserID > 0)
+							{
+								<ul class="nav-left p-0">
+									@* 		<li class="nav-item ">
+										<a class="nav-link dropdown-toggle active" aria-current="page" asp-action="Index">Home</a>
+
+									</li> *@
+									<li class="nav-item dropdown">
+										@if (APIControl.Role == "Admin")
+										{
+											<a class="nav-link dropdown-toggle " asp-controller="Admin" asp-action="Index">
+												Menu
+											</a>
+										}
+										else if (APIControl.Role == "Caterer")
+										{
+											<a class="nav-link dropdown-toggle " asp-controller="Caterer" asp-action="Index">
+												Menu
+											</a>
+										}
+										else
+										{
+											<a class="nav-link dropdown-toggle " asp-controller="Customer" asp-action="Index">
+												Menu
+											</a>
+										}
+
+										@* <ul class="dropdown-menu blog-menu-sub">
+
+											<li class="has-sub-main">
+												<a class="dropdown-item" asp-action="Index">Food</a>
+											</li>
+
+										</ul> *@
+									</li>
+									<li class="nav-item dropdown">
+										@if (APIControl.Role == "Customer")
+										{
+											<a class="nav-link dropdown-toggle " asp-action="checkorders" asp-controller="Customer">
+												Orders
+											</a>
+										}
+										else if (APIControl.Role == "Caterer")
+											{
+											<a class="nav-link dropdown-toggle " asp-action="updateorders" asp-controller="Caterer">
+												Orders
+											</a>
+
+										}
+									
+
+
+										@if (APIControl.Role == "Caterer")
+										{
+											<li class="nav-item dropdown">
+												<a class="nav-link dropdown-toggle " asp-action="AddFoods" asp-controller="Caterer">
+													Add Foods
+												</a>
+											</li>
+										}
+
+
+										@if (APIControl.Role == "Admin")
+										{
+										<li class="nav-item dropdown">
+											<a class="nav-link dropdown-toggle " asp-action="AddCategories" asp-controller="Admin">
+												Add Categories
+											</a>
+										</li>
+
+										<li class="nav-item dropdown">
+											<a class="nav-link dropdown-toggle " asp-action="AddUsers" asp-controller="Admin">
+												Add Users
+											</a>
+										</li>
+										}
+
+										@if (APIControl.Role == "Customer")
+										{
+											<li class="nav-item dropdown">
+
+												<a class="nav-link dropdown-toggle " asp-action="MailBox" asp-controller="Customer">
+													Messages
+												</a>
+
+											</li>
+										}
+										else if (APIControl.Role == "Caterer")
+										{
+											<li class="nav-item dropdown">
+
+											<a class="nav-link dropdown-toggle " asp-action="MailBox" asp-controller="Customer">
+													Messages
+												</a>
+												</li>
+
+										}
+
+										<li class="nav-item dropdown">
+											<a class="nav-link dropdown-toggle " asp-action="about" asp-controller="customer">
+												About Us
+											</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" asp-action="contactus" asp-controller="customer">Contact Us</a>
+										</li>
+										<li class="nav-item">
+											@{
+												user = APIControl.FullName + "(" + @APIControl.Role + ")";
+											}
+											@if (APIControl.UserID > 0)
+											{
+											<div class="dropdown">
+												<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+													@APIControl.UserName
+												</button>
+												<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+													@if(APIControl.Role=="Customer"){
+													<li><a class="dropdown-item" asp-action="editprofile" asp-controller="customer">Edit Profile</a></li>
+															<li><a class="dropdown-item" asp-action="Logout" asp-controller="customer">Logout</a></li>
+														}else if (APIControl.Role == "Caterer")
+														{
+														<li><a class="dropdown-item" asp-action="editprofile" asp-controller="Caterer">Edit Profile</a></li>
+														<li><a class="dropdown-item" asp-action="Logout" asp-controller="customer">Logout</a></li>
+
+														}
+														else if (APIControl.Role == "Admin")
+														{
+														<li><a class="dropdown-item" asp-action="editprofile" asp-controller="Admin">Edit Profile</a></li>
+														<li><a class="dropdown-item" asp-action="Logout" asp-controller="customer">Logout</a></li>
+
+														}
+													</ul>
+											</div>
+
+								@* 				<a class="nav-link" asp-action="Logout" asp-controller="customer">@user</a>
+			 *@								}
+										</li>
+								</ul>
+							}
+						</div>
+						</div>
+					</nav>
+				</div>
+			</div>
+			<div class="mobile-menu-wrap d-lg-none d-block">
+				<div class="mb-header-left">
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedmobile" aria-controls="navbarSupportedmobile" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"><i class="fa-solid fa-bars"></i></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarSupportedmobile">
+						<span class="close-menu"><i class="fa-regular fa-xmark"></i></span>
+						<nav id='cssmenu'>
+							<ul class="open-detail-menu">
+								<li>
+									<a asp-action="Index">Home</a>
+									
+								</li>
+								<li>
+									<a href='javascript:void(0);'>Menu</a>
+									<ul class="sub-back-wrap">
+										<li>
+											<a href='javascript:void(0);'>Menu List</a>
+											<ul>
+												<li><a href="menupage-1.html">Menu List 1</a></li>
+												<li><a href="menupage-2.html">Menu List 2</a></li>
+											</ul>
+										</li>
+										<li>
+											<a href='javascript:void(0);'>Menu Tab</a>
+											<ul>
+												<li><a href="menupage-3.html">Menu Tab 1</a></li>
+												<li><a href="menupage-4.html">Menu Tab 2</a></li>
+											</ul>
+										</li>
+										<li>
+											<a href='menupage-5.html'>Menu Section</a>
+										</li>
+										<li>
+											<a href='javascript:void(0);'>Menu Grid</a>
+											<ul>
+												<li><a href="menupage-6.html">Menu Grid 1</a></li>
+												<li><a href="menupage-7.html">Menu Grid 2</a></li>
+												<li><a href="menupage-8.html">Menu Grid 2</a></li>
+											</ul>
+										</li>
+										<li>
+											<a href='single-shop.html'>Single Shop</a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<a href='javascript:void(0);'>Blog</a>
+									<ul class="sub-back-wrap">
+										<li>
+											<a href='javascript:void(0);'>Blog Standard</a>
+											<ul>
+												<li><a href="blogpage-1.html">Blog Standard</a></li>
+												<li><a href="blogpage-2.html">Blog Standard: Right Sidebar</a></li>
+												<li><a href="blogpage-3.html">Blog Standard: Left Sidebar</a></li>
+											</ul>
+										</li>
+										<li>
+											<a href='blogpage-4.html'>Blog List</a>
+										</li>
+										<li>
+											<a href='javascript:void(0);'>Blog Grid</a>
+											<ul>
+												<li><a href="blogpage-5.html">Grid 1 + 2 Columns</a></li>
+												<li><a href="blogpage-6.html">Grid 2 + 3 Columns</a></li>
+												<li><a href="blogpage-7.html">Grid 3 + 3 Columns</a></li>
+												<li><a href="blogpage-8.html">Grid4 + 2 Columns + Right Sidebar</a></li>
+												<li><a href="blogpage-9.html">Grid4 + 2 Columns + Left Sidebar</a></li>
+												<li><a href="blogpage-10.html">Grid5 + 2 Columns + Right Sidebar</a></li>
+												<li><a href="blogpage-11.html">Grid5 + 2 Columns + Left Sidebar</a></li>
+											</ul>
+										</li>
+										<li>
+											<a href='javascript:void(0);'>Blog Masonry</a>
+											<ul>
+												<li><a href="blogpage-12.html">Blog Masonry 1</a></li>
+												<li><a href="blogpage-13.html">Blog Masonry 2</a></li>
+											</ul>
+										</li>
+										<li>
+											<a href='javascript:void(0);'>Single Blog</a>
+											<ul>
+												<li><a href="single-blogpage1.html">Blog Standard: Right Sidebar</a></li>
+												<li><a href="single-blogpage6.html">Blog Standard: Left Sidebar</a></li>
+												<li><a href="single-blogpage2.html">Quote: Right Sidebar</a></li>
+												<li><a href="single-blogpage7.html">Quote: Left Sidebar</a></li>
+												<li><a href="single-blogpage3.html">Link: Right Sidebar</a></li>
+												<li><a href="single-blogpage8.html">Link: Left Sidebar</a></li>
+												<li><a href="single-blogpage4.html">Slider: Right Sidebar</a></li>
+												<li><a href="single-blogpage9.html">Slider: Left Sidebar</a></li>
+												<li><a href="single-blogpage5.html">Video: Right Sidebar</a></li>
+												<li><a href="single-blogpage10.html">Video: Left Sidebar</a></li>
+											</ul>
+										</li>
+
+									</ul>
+								</li>
+								<li>
+									<a href='javascript:void(0);'>Pages</a>
+									<ul class="sub-back-wrap">
+										<li>
+											<a href='javascript:void(0);'>Our Chefs</a>
+											<ul>
+												<li><a href="chefspage1.html">Our Chefs 1</a></li>
+												<li><a href="chefspage2.html">Our Chefs 2</a></li>
+												<li><a href="chefspage3.html">Our Chefs 3</a></li>
+												<li><a href="single-chefs-deatail-page.html">Single Chefs Details</a></li>
+											</ul>
+										</li>
+										<li>
+											<a href='javascript:void(0);'>Reservation</a>
+											<ul>
+												<li><a href="reservation-1.html">Reservation 1</a></li>
+												<li><a href="reservation-2.html">Reservation 2</a></li>
+												<li><a href="reservation-3.html">Reservation 3</a></li>
+											</ul>
+										</li>
+										<li>
+											<a href='historypage.html'>Our History</a>
+										</li>
+										<li>
+											<a href='404-error.html'>404 Error</a>
+										</li>
+										<li>
+											<a href='comming-soon.html'>Coming Soon</a>
+										</li>
+										<li>
+											<a href='cart-view.html'>Cart View</a>
+										</li>
+										<li>
+											<a href='checkout-page.html'>Checkout</a>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<a href='about-us.html'>About us</a>
+								</li>
+								<li>
+									<a href='contact-us.html'>Contact us</a>
+								</li>
+
+					
+
+							<li>
+								<a href='contact-us.html'>$$@APIControl.FullName</a>
+
+							</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</div>
+
+			<div class="header-cart-sec">
+		
+				<div class="mobile-menu-icon">
+			
+					<a data-bs-toggle="collapse" href="#navbarSupportedmobile" role="button">
+					
+						<i class="fa-solid fa-bars">Tests</i>
+					</a>
+				</div>
+		
+				<div class="header-cart-sec-first">
+	@if(APIControl.UserID>0 && APIControl.Role=="Customer"){
+			
+					<a asp-action="ViewCart" class="cart-badge">
+						<img src="~/images/Homepage1/cart-icon.svg" alt="cart-icon">
+						<div class="cart-no">@CartControl.MyCart.Count</div>
+					
+					</a>
+	}
+				</div>
+			</div>
+		</div>
+		<div class="header-boder"></div>
+	</header>
+
+<body>
+ 
+		
+@*         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">khiemnguyen_FrontEnd</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Caterer" asp-action="Index">Cate</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav> *@
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+	<script src="js/jquery-min-3.6.0.js"></script>
+	<script src="js/slick.min.js"></script>
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/aos.js"></script>
+	<script src="js/jquery-ui.min.js"></script>
+	<script src="js/datepicker.js"></script>
+	<script src="js/wow.min.js"></script>
+	<script src="js/photoswipe.min.js"></script>
+	<script src="js/photoswipe-ui-default.min.js"></script>
+	<script src="js/gallery-popup.js"></script>
+	<script src="js/TweenMax.min.js"></script>
+	<script src="js/ScrollMagic.js"></script>
+	<script src="js/animation.gsap.min.js"></script>
+	<script src="js/scolling.js"></script>
+	<script src="js/custom.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
