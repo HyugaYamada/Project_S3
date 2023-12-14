@@ -4,16 +4,28 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 using System;
+using System.Globalization;
 using System.Reflection;
 using System.Security.Cryptography;
+using BraintreeHttp;
+using PayPal.Core;
+using PayPal.v1.Payments;
 using static System.Net.Mime.MediaTypeNames;
+using Order = khiemnguyen_FrontEnd.Models.Order;
 
 namespace khiemnguyen_FrontEnd.Controllers
 {
 	public class CustomerController : Controller
 	{
+		private readonly string _clientId;
+		private readonly string _secretKey;
 
 		APIControl Control = new APIControl();
+		public CustomerController(IConfiguration configuration)
+		{
+			_clientId = configuration["PaypalSettings:ClientId"];
+			_secretKey = configuration["PaypalSettings:SecretKey"];
+		}
 		public IActionResult Index()
 		{
 			ViewBag.Cid = APIControl.UserID;
@@ -657,6 +669,104 @@ namespace khiemnguyen_FrontEnd.Controllers
 			return View(Mnu.FirstOrDefault());
 			
 		}
+		
+		public async Task<IActionResult> PaypalCheckout()
+    {
+        var environment = new SandboxEnvironment(_clientId, _secretKey);
+        var client = new PayPalHttpClient(environment);
 
+        #region Create Paypal Order
+
+        var itemList = new ItemList
+        {
+            Items = new List<Item>()
+        };
+        var total = Math.Round((double)CartControl.MyCart.Sum(p => p.Price * p.Quantity)*1.1);
+        foreach (var obj in CartControl.MyCart)
+            itemList.Items.Add(new Item
+            {
+                Name = obj.MenuName,
+                Currency = "USD",
+                Price = total.ToString(),
+                Quantity = "1",
+                Sku = "sku",
+                Tax = "0"
+            });
+
+        #endregion
+
+        var paypalOrderId = DateTime.Now.Ticks;
+        var hostname = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+        var payment = new Payment
+        {
+            Intent = "sale",
+            Transactions = new List<Transaction>
+            {
+                new()
+                {
+                    Amount = new Amount
+                    {
+                        Total = total.ToString(CultureInfo.CurrentCulture),
+                        Currency = "USD",
+                        Details = new AmountDetails
+                        {
+                            Tax = "0",
+                            Shipping = "0",
+                            Subtotal = total.ToString(CultureInfo.CurrentCulture)
+                        }
+                    },
+                    ItemList = itemList,
+                    Description = $"Invoice #{paypalOrderId}",
+                    InvoiceNumber = paypalOrderId.ToString()
+                }
+            },
+            RedirectUrls = new RedirectUrls
+            {
+                CancelUrl = $"{hostname}/Customer/Index",
+                ReturnUrl = $"{hostname}/Customer/PayNow"
+            },
+            Payer = new Payer
+            {
+                PaymentMethod = "paypal"
+            }
+        };
+
+        var request = new PaymentCreateRequest();
+        request.RequestBody(payment);
+
+        try
+        {
+            var response = await client.Execute(request);
+            var statusCode = response.StatusCode;
+            var result = response.Result<Payment>();
+
+            var links = result.Links.GetEnumerator();
+            string paypalRedirectUrl = null;
+            while (links.MoveNext())
+            {
+                var lnk = links.Current;
+                if (lnk.Rel.ToLower().Trim().Equals("approval_url"))
+                    //saving the payapalredirect URL to which user will be redirected for payment  
+                    paypalRedirectUrl = lnk.Href;
+            }
+
+            return Redirect(paypalRedirectUrl);
+        }
+        catch (HttpException httpException)
+        {
+            var statusCode = httpException.StatusCode;
+            var debugId = httpException.Headers.GetValues("PayPal-Debug-Id").FirstOrDefault();
+
+            // Log detailed information about the exception
+            Console.WriteLine($"PayPal Checkout Exception - Status Code: {statusCode}, Debug ID: {debugId}");
+
+            // Log the exception message and response body
+            Console.WriteLine($"PayPal Checkout Exception - Message: {httpException.Message}");
+
+            // Process when Checkout with Paypal fails
+            return Redirect("/GioHang/CheckoutFail");
+        }
+
+    }
 	}
 }
