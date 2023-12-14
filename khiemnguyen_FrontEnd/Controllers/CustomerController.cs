@@ -8,6 +8,8 @@ using PayPal.Core;
 using PayPal.v1.Payments;
 using System;
 using System.Globalization;
+using System.Net.Mail;
+using System.Net;
 using System.Reflection;
 using System.Security.Cryptography;
 using static System.Net.Mime.MediaTypeNames;
@@ -178,7 +180,6 @@ namespace khiemnguyen_FrontEnd.Controllers
 			return View("ResetPassword");
 		}
 		[HttpPost]
-
 		public IActionResult RegistorUsersPOST(UserInfo model)
 		{
 			model.CreatedDate = DateTime.Now;
@@ -188,20 +189,55 @@ namespace khiemnguyen_FrontEnd.Controllers
 			model.quationNo = QuationNo;
 			var fileName = Path.GetFileName(image.FileName);
 
-
-
 			using (var target = new MemoryStream())
 			{
 				image.CopyTo(target);
 				model.Image = target.ToArray();
-
 			}
 
-			IEnumerable<UserInfo> ss = Control.PostEndPoint<UserInfo>("/Adduser/", model);
+		
+			try
+			{
+				IEnumerable<UserInfo> ss = Control.PostEndPoint<UserInfo>("/Adduser/", model);
 
+				SendRegistrationEmail(model.Email);
+				TempData["InfoMessage"] = "You register successfully!!!";
+				return RedirectToAction("Login");
+			}
+			catch (Exception ex)
+			{
+				return View("Error");
+			}
+		}
 
-			return RedirectToAction("Login");
+		private void SendRegistrationEmail(string userEmail)
+		{
+			// You need to replace these placeholders with your actual SMTP server information
+			string smtpServer = "smtp.gmail.com";
+			int smtpPort = 587;
+			string smtpUsername = "phamanhtuan11197@gmail.com";
+			string smtpPassword = "yzwojvbcppukmrom";
 
+			using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
+			{
+				smtpClient.UseDefaultCredentials = false;
+				smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+				smtpClient.EnableSsl = true;
+
+				// Replace with your actual email address
+				string fromAddress = "phamanhtuan11197@gmail.com";
+
+				// Create the message
+				MailMessage mailMessage = new MailMessage(fromAddress, userEmail)
+				{
+					Subject = "Registration Successful",
+					Body = "Thank you for registering with our website. Bermiz!!!",
+					IsBodyHtml = false
+				};
+
+				// Send the message
+				smtpClient.Send(mailMessage);
+			}
 		}
 		[HttpPost]
 		public IActionResult LoginPOST()
