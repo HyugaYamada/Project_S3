@@ -407,7 +407,7 @@
         var initialAmountWithSymbol = document.getElementById('totalAmount').innerText;
         
         // Extract the numeric value without the dollar sign
-        var initialAmount = initialAmountWithSymbol.replace('$', '');
+        var initialAmount = initialAmountWithSymbol.replace(/,/g, '.').replace('$', '');
 		
     // Initialize PayPal button with createOrder and onApprove options
     paypal.Buttons({
