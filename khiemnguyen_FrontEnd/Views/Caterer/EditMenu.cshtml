@@ -34,17 +34,17 @@
 		<!-- Header Section End -->
 		<!-- Hero Section Start -->
 		<section id="single-shop-section">
-			<div class="single-shop-section-img">
+			<div class="single-shop-section-img" style="background-image:url(@Url.Content("~/images/ImagePage/1545x5502.jpg"))">
 				<div class="menupage-1-overlay"></div>
 				<div class="menupage-1-conten">
-					<h1 class="blog1-hero-txt1 wow fadeInDown" data-wow-duration="1s" data-wow-delay="2.5s">Edit Profile</h1>
+					<h1 class="blog1-hero-txt1 wow fadeInDown" data-wow-duration="1s" data-wow-delay="2.5s">Edit Menu</h1>
 				</div>
 			</div>
 			<div class="breadcrumb-section">
 				<div class="container">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="index.html">
+							<a href="@Url.Action("Index","Caterer")">
 								<span class="home-icon">
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<mask id="mask0_564_5237" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
@@ -83,8 +83,9 @@
 										@if (Model.Image == null)
 										{
 											<img lass="card-img-top"
-				style="height: 320px"
-				alt="profile picture" class="slider_img img-fluid " src="~/images/single-shop/single-dish-1.png" alt="slider_img">
+												style="height: 320px"
+												alt="profile picture" class="slider_img img-fluid " 
+												src="~/images/single-shop/single-dish-1.png" alt="slider_img">
 										}
 										else
 										{
@@ -107,16 +108,16 @@
 							<input id="id" name="id" value="@Model.id" hidden />
 							<input id="CaterID" name="CaterID" value="@Model.CaterID" hidden />
 						<div class="single-input-form-about-us">
-							<input type="text" name="name" id="name" placeholder="Menu Name" value="@Model.Name" class="about-us-input-custom">
+							<input type="text" name="name" id="name" placeholder="Menu Name" value="@Model.Name" class="about-us-input-custom" required>
 						</div>
 					
 						
 						<div class="single-input-form-about-us">
-							<input type="number" name="price" id="price" placeholder="Price" value="@Model.Price" class="about-us-input-custom">
+							<input type="number" name="price" id="price" min="0" placeholder="Price" value="@Model.Price" class="about-us-input-custom" required>
 						</div>
 
 						<div class="single-input-form-about-us">
-								<input type="text" name="Description" id="Description" placeholder="Menu Name" value="@Model.Description" class="about-us-input-custom">
+								<input type="text" name="Description" id="Description" placeholder="Menu Name" value="@Model.Description" class="about-us-input-custom" required>
 						</div>
 							<div class="single-input-form-about-us">
 								<input type="file" name="image" id="imgae" placeholder="Upload File" value="@Model.Image" class="about-us-input-custom">
@@ -124,11 +125,11 @@
 
 							<br />
 						
-							<h5 class="text-light">Categoury</h5>
+							<h5 class="text-light">Category</h5>
 
 							<div class="single-input-form-about-us">
 								@Html.DropDownListFor(a => a.Category, new SelectList(new List<Object>{
-								"Wedding", "Birthday" ,"New Year Party","Other Event"	}), new { @class = "custom-select custom-select2" })
+								"Wedding", "Birthday" ,"New Year Party","Anniversary","Meetings","Other Event"	}), new { @class = "custom-select custom-select2" })
 							</div>
 					
 						<div class="single-shop-content5">
@@ -172,7 +173,7 @@
 				
 			
 			<div class="row">
-					<h4 class="text-light">Food Itmes</h4>
+					<h4 class="text-light">Food Items</h4>
 				<div class="col-4">
 					
 						@Html.DropDownListFor(a=>a.id,new SelectList ( @ViewBag.Foods ,"id","Name"), new { @class="custom-select custom-select2" })

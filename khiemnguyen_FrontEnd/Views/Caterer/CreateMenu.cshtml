@@ -45,7 +45,7 @@
 				<div class="container">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="index.html">
+							<a href="@Url.Action("Index","Caterer")">
 								<span class="home-icon">
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<mask id="mask0_564_5237" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
@@ -90,30 +90,30 @@
 											<h5 class="text-light">Menu Name</h5>
 											<div class="single-input-form-about-us">
 											
-												<input type="text" name="name" id="name" placeholder="Menu Name" asp-for="@Model.Name" class="about-us-input-custom">
+												<input type="text" name="name" id="name" placeholder="Menu Name" asp-for="@Model.Name" class="about-us-input-custom" required>
 											</div>
 
 											<br />
 											<h5 class="text-light">Price</h5>
 											<div class="single-input-form-about-us">
-												<input type="number" name="price" id="price" placeholder="Price" asp-for="@Model.Price" class="about-us-input-custom">
+												<input type="number" name="price" id="price" min="0" placeholder="Price" asp-for="@Model.Price" class="about-us-input-custom" required>
 											</div>
 											<br />
 											<h5 class="text-light">Description</h5>
 											<div class="single-input-form-about-us">
-												<input type="text" name="Description" id="Description" placeholder="Description" asp-for="@Model.Description" class="about-us-input-custom">
+												<input type="text" name="Description" id="Description" placeholder="Description" asp-for="@Model.Description" class="about-us-input-custom" required>
 											</div>
 											<br />
 											<h5 class="text-light">Upload File</h5>
 											<div class="single-input-form-about-us">
-												<input type="file" name="image" id="imgae" placeholder="Upload File" asp-for="@Model.Image" class="about-us-input-custom">
+												<input type="file" name="image" id="imgae" placeholder="Upload File" asp-for="@Model.Image" class="about-us-input-custom" required>
 											</div>
 											<br />
 											<h5 class="text-light">Categoury</h5>
 
 											<div class="single-input-form-about-us">
 												@Html.DropDownListFor(a => a.Category, new SelectList(new List<Object>{
-												"Wedding", "Birthday" ,"New Year Party","Other Event"	}), new { @class = "custom-select custom-select2" })
+												"Wedding", "Birthday" ,"New Year Party","Anniversary","Meetings","Other Event"	}), new { @class = "custom-select custom-select2", required = "required" })
 											</div>
 
 											<div class="single-shop-content5">
@@ -135,29 +135,29 @@
 					@* Right *@
 						<h5 class="text-light">Appertise</h5>
 						<div class="single-input-form-about-us">
-							@Html.DropDownList("Appertise",new SelectList(@ViewBag.appertise, "id", "Name"), new { @class = "custom-select custom-select2" })
+							@Html.DropDownList("Appertise",new SelectList(@ViewBag.appertise, "id", "Name"), new { @class = "custom-select custom-select2", required = "required" })
 
 						
 						</div>
 						<br />
 						<h5 class="text-light">Starter</h5>
 						<div class="single-input-form-about-us">
-							@Html.DropDownList("Starter",new SelectList(@ViewBag.Stater, "id", "Name"), new { @class = "custom-select custom-select2" })
+							@Html.DropDownList("Starter",new SelectList(@ViewBag.Stater, "id", "Name"), new { @class = "custom-select custom-select2", required = "required" })
 						</div>
 						<br />
 						<h5 class="text-light">Main Sourse</h5>
 						<div class="single-input-form-about-us">
-								@Html.DropDownList("Maincourse",new SelectList(@ViewBag.MainSourse, "id", "Name"), new { @class = "custom-select custom-select2" })
+								@Html.DropDownList("Maincourse",new SelectList(@ViewBag.MainSourse, "id", "Name"), new { @class = "custom-select custom-select2", required = "required" })
 						</div>
 						<br />
 						<h5 class="text-light">Desert</h5>
 						<div class="single-input-form-about-us">
-							@Html.DropDownList("Desert",new SelectList(@ViewBag.Desert, "id", "Name"), new { @class = "custom-select custom-select2" })
+							@Html.DropDownList("Desert",new SelectList(@ViewBag.Desert, "id", "Name"), new { @class = "custom-select custom-select2", required = "required" })
 						</div>
 						<br />
 						<h5 class="text-light">Drink</h5>
 						<div class="single-input-form-about-us">
-							@Html.DropDownList("Drink",new SelectList(@ViewBag.Drink, "id", "Name"), new { @class = "custom-select custom-select2" })
+							@Html.DropDownList("Drink",new SelectList(@ViewBag.Drink, "id", "Name"), new { @class = "custom-select custom-select2", required = "required" })
 						</div>
 							
 					</div>

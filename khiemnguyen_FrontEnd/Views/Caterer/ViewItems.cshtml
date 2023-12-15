@@ -45,7 +45,7 @@
 				<div class="container">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="index.html">
+							<a href="@Url.Action("Index","Caterer")">
 								<span class="home-icon">
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<mask id="mask0_564_5237" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
@@ -109,19 +109,19 @@
 							<input id="id" name="id" value="@Model.id" hidden />
 					
 							<div class="single-input-form-about-us">
-								<input type="text" name="Name" id="Name" placeholder="Item Name" value="@Model.Name" class="about-us-input-custom">
+								<input type="text" name="Name" id="Name" placeholder="Item Name" value="@Model.Name" class="about-us-input-custom" required>
 							</div>
 
 
 							<div class="single-input-form-about-us">
-								<input type="number" name="Description" id="Description" placeholder="Description" value="@Model.Description" class="about-us-input-custom">
+								<input type="number" name="Description" id="Description" placeholder="Description" value="@Model.Description" class="about-us-input-custom" required>
 							</div>
 
 							<div class="single-input-form-about-us">
-								@Html.DropDownListFor(a=>a.id,new SelectList ( @ViewBag.cate ,"Name","Name"), new { @class="custom-select custom-select2" })
+								@Html.DropDownListFor(a=>a.id,new SelectList ( @ViewBag.cate ,"Name","Name"), new { @class="custom-select custom-select2", required = "required" })
 							</div>
 							<div class="single-input-form-about-us">
-								<input type="file" name="postedFile" id="postedFile" placeholder="Upload File" value="@Model.Image" class="about-us-input-custom">
+								<input type="file" name="postedFile" id="postedFile" placeholder="Upload File" value="@Model.Image" class="about-us-input-custom" required>
 							</div>
 
 							<div class="single-shop-content5">

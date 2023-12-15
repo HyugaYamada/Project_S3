@@ -35,7 +35,7 @@
 		<!-- Header Section End -->
 		<!-- Hero Section Start -->
 		<section id="single-shop-section">
-			<div class="single-shop-section-img">
+			<div class="single-shop-section-img" style="background-image:url(@Url.Content("~/images/ImagePage/welcome.jpg"))">
 				<div class="menupage-1-overlay"></div>
 				<div class="menupage-1-conten">
 					<h1 class="blog1-hero-txt1 wow fadeInDown" data-wow-duration="1s" data-wow-delay="2.5s">Single Dish</h1>
@@ -59,7 +59,7 @@
 							</a>
 						</li>
 						<li class="breadcrumb-item " aria-current="page">
-							<a href="menupage-1.html">Edit Menu</a>
+							<a href="menupage-1.html">Register</a>
 						</li>
 						@* 	<li class="breadcrumb-item active" aria-current="page">Chicken Biryani</li>
 						*@
@@ -172,7 +172,7 @@
 						 *@	<p class="text-light">Image</p>
 
 							<div class="single-input-form-about-us">
-								<input type="file" name="Image" id="Image" placeholder="Upload File" asp-for="Image" class="about-us-input-custom">
+								<input type="file" name="Image" id="Image" placeholder="Upload File" asp-for="Image" class="about-us-input-custom" required>
 							</div>
 
 

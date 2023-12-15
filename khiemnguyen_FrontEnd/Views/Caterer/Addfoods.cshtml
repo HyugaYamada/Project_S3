@@ -33,8 +33,8 @@
 	
 		<!-- Header Section End -->
 		<!-- Hero Section Start -->
-		<section id="single-shop-section">
-			<div class="single-shop-section-img">
+		<section id="single-shop-section" >
+			<div class="single-shop-section-img" style="background-image:url(@Url.Content("~/images/ImagePage/1545x5502.jpg"))">
 				<div class="menupage-1-overlay"></div>
 				<div class="menupage-1-conten">
 					<h1 class="blog1-hero-txt1 wow fadeInDown" data-wow-duration="1s" data-wow-delay="2.5s">Add Foods</h1>
@@ -44,7 +44,7 @@
 				<div class="container">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="index.html">
+							<a href="@Url.Action("Index","Caterer")">
 								<span class="home-icon">
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<mask id="mask0_564_5237" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
@@ -120,19 +120,19 @@
 						<form asp-action="AddFoodsPOST" enctype="multipart/form-data">
 			
 						<div class="single-input-form-about-us">
-								@Html.DropDownListFor(a => a.Category, new SelectList(@ViewBag.category, "Name", "Name"), new { @class = "custom-select custom-select2" })
+								@Html.DropDownListFor(a => a.Category, new SelectList(@ViewBag.category, "Name", "Name"), new { @class = "custom-select custom-select2", required = "required" })
 							</div>
 					
 						
 						<div class="single-input-form-about-us">
-								<input type="text" name="Name" id="Name" placeholder="Name" asp-for="Name" class="about-us-input-custom">
+								<input type="text" name="Name" id="Name" placeholder="Name" asp-for="Name" class="about-us-input-custom" required>
 						</div>
 
 						<div class="single-input-form-about-us">
-								<input type="text" name="Description" id="Description" placeholder="Description" asp-for="Description" class="about-us-input-custom">
+								<input type="text" name="Description" id="Description" placeholder="Description" asp-for="Description" class="about-us-input-custom" required>
 						</div>
 							<div class="single-input-form-about-us">
-								<input type="file" name="Image" id="Image" placeholder="Upload File" asp-for="Image" class="about-us-input-custom">
+								<input type="file" name="Image" id="Image" placeholder="Upload File" asp-for="Image" class="about-us-input-custom" required>
 							</div>
 					
 						<div class="single-shop-content5">
