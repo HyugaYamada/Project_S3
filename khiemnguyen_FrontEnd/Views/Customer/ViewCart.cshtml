@@ -67,7 +67,7 @@
 		<!-- Header Section End -->
 		<!-- Hero Section Start -->
 		<section id="menupage-1-section">
-			<div class="menupage-1-section-img">
+			<div class="menupage-1-section-img" style="background-image:url(@Url.Content("~/images/ImagePage/1545x550.jpg"))">
 				<div class="menupage-1-overlay"></div>
 				<div class="menupage-1-conten">
 					<h1 class="menupage-1-hero-txt1 wow fadeInDown" data-wow-duration="1s" data-wow-delay="2.5s">Cart View</h1>
@@ -77,7 +77,7 @@
 				<div class="container">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="index.html">
+							<a href="@Url.Action("Index","Customer")">
 								<span class="home-icon">
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 										<mask id="mask0_564_5237" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
@@ -197,16 +197,21 @@
 							
 							<p class="total-txt"><span>total:</span> <span id="totalAmount">$@Gpro</span></p>
 							<!-- Regular Payment Form -->
-                            <form class="checkout-form">
+                            @*<form class="checkout-form">
                                 <select name="PayType" id="PayType" class="custom-select custom-select2">
                                     <option value="MASTER">MASTER</option>
                                     <option value="VISA">VISA</option>
                                     <option value="COD">CASH ON DELIVERY</option>
                                 </select>
-                            </form>
+                            </form>*@
+							<div class="checkout-btn">
+								<!-- A link or button for other payment methods -->
+								<a asp-action="Paynow">Cash on Delivery</a>
+							</div>
+
                             
                             <!-- PayPal Payment Form -->
-                            <form action="/Customer/PaypalCheckout" method="post">
+							<form action="/Customer/PaypalCheckout" method="post" style="padding-top: 5px">
                                 <!-- Set up a container element for the button -->
                                 <div id="paypal-button-container"></div>
                                 <!-- Add a regular submit button as a fallback -->
@@ -215,12 +220,7 @@
                             
                             <!-- Error Message Container -->
                             <div id="error-message" style="color: red;"></div>
-                            
-                            <div class="checkout-btn">
-                                <!-- A link or button for other payment methods -->
-                                <a asp-action="Paynow">Pay Now</a>
-                            </div>
-
+                                                  
 						</div>
 					</div>
 				</div>
