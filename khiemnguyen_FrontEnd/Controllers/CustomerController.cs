@@ -607,8 +607,8 @@ namespace khiemnguyen_FrontEnd.Controllers
 			ViewBag.name = Mnu.FirstOrDefault().FullName;
 			ViewBag.address = Mnu.FirstOrDefault().Address;
 			ViewBag.phoneno = Mnu.FirstOrDefault().PhoneNo;
-
-
+			// Pass the required data to the view
+			ViewBag.CartData = Ord;
 			return View(Ord);
 
 		}
@@ -764,7 +764,7 @@ namespace khiemnguyen_FrontEnd.Controllers
             Console.WriteLine($"PayPal Checkout Exception - Message: {httpException.Message}");
 
             // Process when Checkout with Paypal fails
-            return Redirect("/GioHang/CheckoutFail");
+            return Redirect("Index");
         }
 
     }
